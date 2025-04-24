@@ -13,6 +13,7 @@ public class PlayerAnimation : MonoBehaviour
         PlayerMovement.OnMoveDirectionChanged += OnAdjustMovementDirection;
         PlayerMovement.OnStanding += OnStanding;
         PlayerEventAnimation.OnMoveSeriesPunch += OnMoveSeriesPunch;
+        PlayerStats.OnTakeDamage += OnTakeDamage;
     }
 
     void OnDisable()
@@ -82,5 +83,10 @@ public class PlayerAnimation : MonoBehaviour
     private void OnMoveSeriesPunch()
     {
         _animator.SetBool("IsMove",true);
+    }
+    private void OnTakeDamage()
+    {
+        ResetTrigger();
+        _animator.SetTrigger("Beaten");
     }
 }

@@ -14,7 +14,7 @@ public class BoxerAnimation : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         _boxer.BoxerMovement.OnMoveDirectionChanged += OnAdjustMovementDirection;
         _boxer.BoxerMovement.OnStopMove += OnStanding;
-
+        _boxer.BoxerStats.OnTakeDamage += OnTakeDamage;
     }
 
     public void OnAdjustMovementDirection(Vector3 movementDirection)
@@ -46,6 +46,7 @@ public class BoxerAnimation : MonoBehaviour
     public void Punch()
     {
         ResetTrigger();
+        
         _animator.SetFloat("TypePunch",Random.Range(1,4));
         _animator.SetTrigger("Punch");
     }
@@ -67,5 +68,10 @@ public class BoxerAnimation : MonoBehaviour
         _animator.ResetTrigger("Block");
         _animator.ResetTrigger("SeriesPunch");
         _animator.ResetTrigger("Punch");
+    }
+    private void OnTakeDamage()
+    {
+        ResetTrigger();
+        _animator.SetTrigger("Beaten");
     }
 }

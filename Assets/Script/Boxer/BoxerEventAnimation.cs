@@ -8,7 +8,7 @@ public class BoxerEventAnimation : MonoBehaviour
     public Action<bool> OnCanMove;
     public Action OnCompleteBlock;
     public Action OnMoveSeriesPunch;
-
+    public Action OnRaiseDamage;
 
     private IEnumerator EventCompleteSeriesCombo()
     {
@@ -28,5 +28,9 @@ public class BoxerEventAnimation : MonoBehaviour
     private void SetIsMoveSeriesPunch()
     {
         OnMoveSeriesPunch?.Invoke();
+    }
+    private void RaiseDamage()
+    {
+        OnRaiseDamage?.Invoke();
     }
 }

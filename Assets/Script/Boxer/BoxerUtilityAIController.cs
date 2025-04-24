@@ -8,7 +8,10 @@ public class UtilityAIController : MonoBehaviour
     private GameObject _opponent;
     public float decisionInterval = 0.3f;    // mỗi 0.3s tính lại behavior
     private float _nextDecisionTime;
-
+    private GoapPlanner _planner = new();
+    private Queue<GoapAction> _currentPlan;
+    private GoapAction _currentAction;
+    private HashSet<GoapAction> _availableActions = new();
     private BoxingAI _ai;
     private GameManager _gameManager;
     private Boxer _boxer;
@@ -22,7 +25,68 @@ public class UtilityAIController : MonoBehaviour
         _gameManager = GameManager.Instance;
         _ai = _boxer.BoxingAI;
         _boxer.BoxerFocus.OnChangeFocus += OnChangeFocus;
+
     }
+    // void Update()
+    // {
+    //     if (Time.time < _nextDecisionTime) return;
+
+    //     // Nếu hết plan hoặc plan chưa được tính
+    //     if (_currentPlan == null || _currentPlan.Count == 0)
+    //     {
+    //         var world = GetWorldState();
+    //         var goal = GetGoalState();
+    //         _currentPlan = _planner.Plan(this.gameObject, _availableActions, world, goal);
+    //         if (_currentPlan == null)
+    //         {
+    //             Debug.LogWarning("GOAP: No plan found");
+    //             _nextDecisionTime = Time.time + decisionInterval;
+    //             return;
+    //         }
+    //         _currentAction = _currentPlan.Dequeue();
+    //     }
+
+    //     if (_currentAction != null)
+    //     {
+    //         if (!_currentAction.IsDone)
+    //         {
+    //             if (!_currentAction.CheckProceduralPrecondition(this.gameObject))
+    //             {
+    //                 // Precondition runtime fail → hủy plan
+    //                 _currentPlan = null;
+    //                 return;
+    //             }
+    //             _currentAction.Perform(this.gameObject);
+    //         }
+    //         if (_currentAction.IsDone)
+    //         {
+    //             // Chuyển sang action kế
+    //             _currentAction = _currentPlan.Count > 0 ? _currentPlan.Dequeue() : null;
+    //             _nextDecisionTime = Time.time + decisionInterval;
+    //         }
+    //     }
+    // }
+
+
+    // private Dictionary<string, object> GetWorldState()
+    // {
+    //     float dist = _ai.DistanceTo(_opponent.transform);
+    //     return new Dictionary<string, object>
+    //     {
+    //         ["dist"] = dist,
+    //         ["playerIsWindingUp"] = AIUtils.PlayerIsWindingUp(_opponent.transform, _boxer.BoxerAttack.GetIsBlock())
+    //     };
+    // }
+
+    // private Dictionary<string, object> GetGoalState()
+    // {
+    //     // Ví dụ goal: đã tấn công 1 lần
+    //     return new Dictionary<string, object>
+    //     {
+    //         ["hasBlocked"] = true,
+    //         // ["hasAttacked"] = true
+    //     };
+    // }
     void Update()
     {
         if (Time.time < _nextDecisionTime) return;
@@ -91,5 +155,11 @@ public class UtilityAIController : MonoBehaviour
     private void OnChangeFocus(GameObject focus)
     {
         _opponent = focus;
+        _availableActions.Clear();
+        _availableActions.Add(new BlockAction(_opponent, _ai));
+        _availableActions.Add(new RetreatAction(_opponent, _ai));
+        _availableActions.Add(new ApproachAction(_opponent, _ai));
+        _availableActions.Add(new AttackAction(_opponent, _ai));
+        _availableActions.Add(new IdleAction(_ai));
     }
 }

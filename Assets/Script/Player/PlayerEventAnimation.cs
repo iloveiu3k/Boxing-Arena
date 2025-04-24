@@ -9,7 +9,7 @@ public class PlayerEventAnimation : MonoBehaviour
     public static Action<bool> OnCanMove;
     public static Action OnCompleteBlock;
     public static Action OnMoveSeriesPunch;
-
+    public static Action OnRaiseDamage;
 
     private IEnumerator EventCompleteSeriesCombo()
     {
@@ -29,5 +29,9 @@ public class PlayerEventAnimation : MonoBehaviour
     private void SetIsMoveSeriesPunch()
     {
         OnMoveSeriesPunch?.Invoke();
+    }
+    private void RaiseDamage()
+    {
+        OnRaiseDamage?.Invoke();
     }
 }

@@ -82,4 +82,8 @@ public class PlayerFocus : MonoBehaviour
         transform.rotation = to;
         _isSwitching = false;
     }
+    public GameObject GetEnemyFocus()
+    {
+        return _enemyFocus;
+    }
 }

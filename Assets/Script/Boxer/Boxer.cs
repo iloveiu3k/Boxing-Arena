@@ -21,7 +21,8 @@ public class Boxer : MonoBehaviour
 
     private BoxerEventAnimation _boxerEventAnimation;
     public BoxerEventAnimation BoxerEventAnimation  { get => _boxerEventAnimation; }
-
+    private BoxerStats _boxerStats;
+    public BoxerStats BoxerStats  { get => _boxerStats; }
     [SerializeField] private BoxerDataSO _boxerDataSO;
     public BoxerDataSO BoxerDataSO { get => _boxerDataSO; }
 
@@ -33,5 +34,6 @@ public class Boxer : MonoBehaviour
         _boxerFocus = GetComponent<BoxerFocus>(); 
         _boxingAI = GetComponent<BoxingAI>();
         _boxerEventAnimation = GetComponentInChildren<BoxerEventAnimation>();
+        _boxerStats = GetComponent<BoxerStats>();
     }
 }

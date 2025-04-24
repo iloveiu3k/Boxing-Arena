@@ -21,6 +21,9 @@ public class Player : Singleton<Player>
     private PlayerFocus _playerFocus;
     public PlayerFocus PlayerFocus { get => _playerFocus; }
 
+    private PlayerStats _playerStats;
+    public PlayerStats PlayerStats { get => _playerStats; }
+
     private PlayerEventAnimation _playerEventAnimation;
     public PlayerEventAnimation PlayerEventAnimation { get => _playerEventAnimation; }
 
@@ -35,6 +38,7 @@ public class Player : Singleton<Player>
         _playerAttack = GetComponent<PlayerAttack>();
         _playerFocus = GetComponent<PlayerFocus>(); 
         _playerEventAnimation = GetComponentInChildren<PlayerEventAnimation>();
+        _playerStats = GetComponent<PlayerStats>();
     }
 
 }

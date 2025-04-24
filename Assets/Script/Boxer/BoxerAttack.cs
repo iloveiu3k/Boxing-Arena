@@ -10,27 +10,30 @@ public class BoxerAttack : MonoBehaviour
     private bool _isComboPunch = false;
     private bool _isPunch = false;
     private int _countPunch = 0;
-    private List<GameObject> _listOpponentEnter = new List<GameObject>();
+    private bool _canBlock = true; 
+
+    public List<GameObject> _listOpponentEnter = new List<GameObject>();
     void Start()
     {
         _boxer = GetComponent<Boxer>();
         _boxer.BoxerEventAnimation.OnCompleteBlock += OnCompleteBlock;
         _boxer.BoxingAI.OnBlock += OnActiveBlock;
         _boxer.BoxingAI.OnAttack += OnAttack;
+        _boxer.BoxerEventAnimation.OnRaiseDamage += OnRaiseDamage;
     }
-        void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("ColliderDamage") && _boxer.BoxerFocus.GetBoxerFocusList().Contains(other.gameObject))
+        if(other.CompareTag("ColliderDamage") && _boxer.BoxerFocus.GetBoxerFocusList().Contains(other.transform.root.gameObject))
         {
-            _listOpponentEnter.Add(other.gameObject);
+            _listOpponentEnter.Add(other.transform.root.gameObject);
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("ColliderDamage") && _boxer.BoxerFocus.GetBoxerFocusList().Contains(other.gameObject))
+        if(other.CompareTag("ColliderDamage") && _boxer.BoxerFocus.GetBoxerFocusList().Contains(other.transform.root.gameObject))
         {
-            _listOpponentEnter.Remove(other.gameObject);
+            _listOpponentEnter.Remove(other.transform.root.gameObject);
         }
     }
     private void OnAttack()
@@ -61,11 +64,12 @@ public class BoxerAttack : MonoBehaviour
 
     private void OnActiveBlock()
     {
-        if(_isBlock)
+        if(!_canBlock)
         {
             return;
         }
         _isBlock = true;
+        _canBlock = false;
         _boxer.BoxerAnimation.Block();
     }
 
@@ -78,14 +82,29 @@ public class BoxerAttack : MonoBehaviour
     {
         _isComboPunch = false;
         _isPunch = false;
+        _isBlock = false;
         StartCoroutine(WaitRecoveryTimeBlock());
+    }
+
+    private void OnRaiseDamage()
+    {
+        var target = _boxer.BoxerFocus.GetBoxerFocus();
+        if (_listOpponentEnter.Contains(target))
+        {
+            var dmg = target.GetComponent<IDamageable>();
+            if (dmg != null)
+            {
+                dmg.TakeDamage(_boxer.BoxerDataSO.basicDamage);
+
+            }
+        }
     }
 
     private IEnumerator WaitRecoveryTimeBlock()
     {
         yield return new WaitForSeconds(_boxer.BoxerDataSO.recoveryTimeBlock);
         _isBlock = false;
-
+        _canBlock = true;
     }
 
     public bool GetIsBlock()

@@ -12,15 +12,16 @@ public class PlayerAttack : MonoBehaviour
     private int _countPunch = 0;
     private Player _player;
     private bool _isBlock = false;
-    private List<GameObject> _listEnemyEnter = new List<GameObject>();
+    private List<GameObject> _listOpponentEnter = new List<GameObject>();
 
 
     private void OnEnable()
     {
         BotNavigationHandler.OnActiveBlock += OnActiveBlock;
-        BotNavigationHandler.OnActiveBlock += OnActiveBlock;
         PlayerEventAnimation.OnCompleteCombo += OnCompleteCombo;
         PlayerEventAnimation.OnCompleteBlock += OnCompleteBlock;
+        PlayerStats.OnTakeDamage += OnTakeDamage;
+        PlayerEventAnimation.OnRaiseDamage += OnRaiseDamage;
     }
 
     private void Start()
@@ -33,11 +34,11 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if(_listEnemyEnter.Count > 0 && !_isPunch && !_isComboPunch)
+        if(_listOpponentEnter.Count > 0 && !_isPunch && !_isComboPunch)
         {
             StartCoroutine(Punch());
         }
-        else if(_listEnemyEnter.Count <= 0)
+        else if(_listOpponentEnter.Count <= 0)
         {
             _countPunch = 0;
         }
@@ -47,7 +48,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if(other.CompareTag("ColliderDamage") && other.transform.parent.CompareTag("Enemy"))
         {
-            _listEnemyEnter.Add(other.gameObject);
+            _listOpponentEnter.Add(other.transform.parent.gameObject);
         }
     }
 
@@ -55,7 +56,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if(other.CompareTag("ColliderDamage") && other.transform.parent.CompareTag("Enemy"))
         {
-            _listEnemyEnter.Remove(other.gameObject);
+            _listOpponentEnter.Remove(other.transform.parent.gameObject);
         }
     }
 
@@ -97,10 +98,31 @@ public class PlayerAttack : MonoBehaviour
         StartCoroutine(WaitRecoveryTimeBlock());
     }
 
+    private void OnTakeDamage()
+    {
+        _isComboPunch = false;
+    }
+    private void OnRaiseDamage()
+    {
+        var target = _player.PlayerFocus.GetEnemyFocus();
+        if (_listOpponentEnter.Contains(target))
+        {
+            var dmg = target.GetComponent<IDamageable>();
+            if (dmg != null)
+            {
+                dmg.TakeDamage(_player.PlayerDataSO.basicDamage);
+            }
+        }
+    }
+
     private IEnumerator WaitRecoveryTimeBlock()
     {
         yield return new WaitForSeconds(Player.Instance.PlayerDataSO.recoveryTimeBlock);
         _isBlock = false;
 
+    }
+    public bool GetIsBlock()
+    {
+        return _isBlock;
     }
 }
