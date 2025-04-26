@@ -46,10 +46,9 @@ public class UtilityAIController : MonoBehaviour
             FindOpponent();
             return;
         }
-        Debug.Log(_opponent.name);
         dist = _ai.DistanceTo(_opponent.transform);
         _scores[BehaviorType.Block] = AIUtils.PlayerIsWindingUp(_opponent.transform, _boxer.BoxerAttack.GetIsBlock()) 
-                                            && dist < _ai.attackRange ? 3f : 0f;
+                                             ? 3f : 0f;
         _scores[BehaviorType.Retreat] = dist < _ai.minSafeDistance ? 2f : 0f;
         _scores[BehaviorType.Approach] = dist > _ai.attackRange ? 2f : 0f;
         _scores[BehaviorType.Attack] = dist <= _ai.attackRange ? 3f : 0f;

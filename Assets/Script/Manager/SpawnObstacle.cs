@@ -13,6 +13,7 @@ public class SpawnObstacle : MonoBehaviour
     private Bounds _areaBox ;
     private float _timeSetup = 4;
     private int _maxTurnThrow ;
+    private List<float> _percentRandomTurn;
     private void Start()
     {
         _placesThrow = GetComponentsInChildren<Transform>().ToList();
@@ -20,10 +21,16 @@ public class SpawnObstacle : MonoBehaviour
         _areaBox = GameManager.Instance.GetAreaBox();
         _maxTurnThrow = GameManager.Instance.GetDifficultLevel();
         StartCoroutine(TimeWaitNetTurn(10 - _maxTurnThrow));
+        _percentRandomTurn = CalculateListPercent(_maxTurnThrow);
+        foreach (float p in _percentRandomTurn)
+        {
+            Debug.Log(string.Join(", ", p));
+        }
+
     }
     private void NumberOfThrow()
     {
-        int turn =RandomNumber(0,_maxTurnThrow);
+        int turn = RandomByPercent(_percentRandomTurn);
         _canThrow = false;
         for(int i = 0;i < turn; i++)
         {
@@ -103,6 +110,39 @@ public class SpawnObstacle : MonoBehaviour
     private int RandomNumber(int min, int max)
     {
         return Random.Range(min,max);
+    }
+    public int RandomByPercent(List<float> percents)
+    {
+        float r = Random.Range(0f, 100f);
+        float cumulative = 0f;
+
+        for (int i = 0; i < percents.Count; i++)
+        {
+            cumulative += percents[i];
+            if (r < cumulative)
+            {
+                return i + 1;
+            }
+        }
+
+        return 1; 
+    }
+    public List<float> CalculateListPercent(int number)
+    {
+        List<float> percents = new List<float>();
+        int sum = 0;
+
+        for (int i = 1; i <= number; i++)
+        {
+            sum += (number - i + 1);
+        }
+
+        for (int i = 1; i <= number; i++)
+        {
+            float r = (float)(number - i + 1) / sum * 100f;
+            percents.Add(r);
+        }
+        return percents;
     }
 }
 

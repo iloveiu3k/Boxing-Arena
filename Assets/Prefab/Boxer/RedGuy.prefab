@@ -92,6 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcf49af0d67d0443cb8826d01c1530cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _boxerFocus: {fileID: 0}
   ScopeFocus: 20
 --- !u!114 &77454950323429202
 MonoBehaviour:
@@ -118,6 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99962282c01234f2e91d9bb8129a5208, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _listOpponentEnter: []
 --- !u!114 &2520865183246714757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,7 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4bd2a6e3557348018c060f58bda9b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  decisionInterval: 1
+  decisionInterval: 1.5
 --- !u!1 &5104732015627250053
 GameObject:
   m_ObjectHideFlags: 0
