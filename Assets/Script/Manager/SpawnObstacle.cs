@@ -22,11 +22,6 @@ public class SpawnObstacle : MonoBehaviour
         _maxTurnThrow = GameManager.Instance.GetDifficultLevel();
         StartCoroutine(TimeWaitNetTurn(10 - _maxTurnThrow));
         _percentRandomTurn = CalculateListPercent(_maxTurnThrow);
-        foreach (float p in _percentRandomTurn)
-        {
-            Debug.Log(string.Join(", ", p));
-        }
-
     }
     private void NumberOfThrow()
     {
@@ -107,10 +102,6 @@ public class SpawnObstacle : MonoBehaviour
         yield return new WaitForSeconds(second);
         _canThrow = true;
     }
-    private int RandomNumber(int min, int max)
-    {
-        return Random.Range(min,max);
-    }
     public int RandomByPercent(List<float> percents)
     {
         float r = Random.Range(0f, 100f);
@@ -124,7 +115,6 @@ public class SpawnObstacle : MonoBehaviour
                 return i + 1;
             }
         }
-
         return 1; 
     }
     public List<float> CalculateListPercent(int number)
